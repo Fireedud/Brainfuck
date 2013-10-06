@@ -14,7 +14,9 @@ void eval(char line[], char *ptr)
 {
 	int s = strlen(line);
 	int i = 0;
+	int lastleft = -1; //This will break any code that has an initial ] w/o a [
 	for(i=0; i<s; i++){
+		printf("%d %c %d %c\n",  i, line[i], ptr, *ptr);
 		switch(line[i]){
 			case '>':
 				ptr++;
@@ -23,10 +25,10 @@ void eval(char line[], char *ptr)
 				ptr--;
 				break;
 			case '+':
-				*ptr++;
+				(*ptr)++;
 				break;
 			case '-':
-				*ptr--;
+				(*ptr)--;
 				break;
 			case '.':
 				putchar(*ptr);
@@ -35,12 +37,32 @@ void eval(char line[], char *ptr)
 				*ptr = getchar();
 				break;
 			case '[':
-				//to be implemented later
+				lastleft = i;
+				if(*ptr == '\0'){
+					int j = i;
+					while(line[j] != ']'){
+						j++;
+					}
+					i = j;
+				}
 				break;
 			case ']':
-				//to be implemented later
+				if(*ptr != '\0'){
+					i = lastleft;
+				}
 				break;
 			default:
 				//do nothing
 				break;
 		}
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	if(argc>0){
+		eval(argv[1], setup(SIZE));
+	}
+	
+	return 0;
+}
