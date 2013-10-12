@@ -16,7 +16,7 @@ void eval(char line[], char *ptr)
 	int i = 0;
 	int lastleft = -1; //This will break any code that has an initial ] w/o a [
 	for(i=0; i<s; i++){
-		printf("%d %c %d %c\n",  i, line[i], ptr, *ptr);
+		//printf("%d %c %d %c\n",  i, line[i], ptr, *ptr); // for debugging
 		switch(line[i]){
 			case '>':
 				ptr++;
