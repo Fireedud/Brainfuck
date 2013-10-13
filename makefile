@@ -1,7 +1,6 @@
-CC=GCC
+CC=gcc
 CFLAGS=-g -Wall
 SOURCES=brainfuck.c
 
-all: $(patsubst, %.c, %, $(SOURCES))
-
-$(
+all: $(SOURCES)
+	$(CC) $(CFLAGS) $^ -o $(patsubst %.c, %, $^)
