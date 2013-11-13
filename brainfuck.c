@@ -10,13 +10,19 @@ char *setup(int size)
 	return ptr;
 }
 
-void eval(char line[], char *ptr)
+/*This should probably grow dynamically
+  but this is good for now just to get
+  nested brackets to work*/
+struct LeftBrackets {
+	int loc[100]; //the size can be changed later
+	int counter;
+};
+
+void eval(char line[], char *ptr, struct LeftBrackets *list)
 {
-	int s = strlen(line);
 	int i = 0;
-	int lastleft = -1; //This will break any code that has an initial ] w/o a [
-	for(i=0; i<s; i++){
-		//printf("%d %c %d %c\n",  i, line[i], ptr, *ptr); // for debugging
+	for(i=0; line[i] != EOF && line[i] != '\0'; i++){
+		printf("%d %c %d %c \t %d %d\n",  i, line[i], ptr, *ptr, list->loc[list->counter-1], list->counter); // for debugging
 		switch(line[i]){
 			case '>':
 				ptr++;
@@ -37,7 +43,7 @@ void eval(char line[], char *ptr)
 				*ptr = getchar();
 				break;
 			case '[':
-				lastleft = i;
+				list->loc[list->counter++] = i;
 				if(*ptr == '\0'){
 					int j = i;
 					while(line[j] != ']'){
@@ -48,7 +54,7 @@ void eval(char line[], char *ptr)
 				break;
 			case ']':
 				if(*ptr != '\0'){
-					i = lastleft;
+					i = list->loc[list->counter--];
 				}
 				break;
 			default:
@@ -61,7 +67,30 @@ void eval(char line[], char *ptr)
 int main(int argc, char *argv[])
 {
 	if(argc>0){
-		eval(argv[1], setup(SIZE));
+		if(strcmp(argv[1], "f") == 0){ //handle files here
+			/*FILE *fp = fopen(argv[2], "r");
+			char *ptr = setup(SIZE);
+			int c = '\0';
+			char line[300];
+		       	int i = 0;	
+			//every ] is considered to be the end of a line
+			//the size of this array is arbitrary for now
+			while((c = fgetc(fp)) != EOF){
+				line[i++] = c;
+				if(c == ']'){
+					line[i] = '\0';
+					eval(line, ptr);
+					i = 0;
+				}
+			}*/
+			printf("Sorry, we do not handle files right now.\n");
+		} else {
+			struct LeftBrackets list;
+			list.counter = 0; //initializing it
+			eval(argv[1], setup(SIZE), &list);
+		}
+	} else {
+		printf("Need either one or two arguments\n");
 	}
 	
 	return 0;
